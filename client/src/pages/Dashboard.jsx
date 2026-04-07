@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { User, Settings, Shield, PlusCircle, MessageSquare, List, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 
 const Dashboard = () => {
   const { user } = useAuth();
@@ -44,9 +46,9 @@ const Dashboard = () => {
               <PlusCircle className="text-emerald-500 mb-4" size={32} />
               <h3 className="text-xl font-bold text-slate-900 mb-2">Add New Service</h3>
               <p className="text-slate-500 mb-6">List a new service to start getting inquiries from customers.</p>
-              <button className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
+              <Link to="/services/add" className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all mt-auto w-fit">
                 Get Started <PlusCircle size={18} />
-              </button>
+              </Link>
             </motion.div>
 
             <motion.div variants={item} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-all">
@@ -76,9 +78,9 @@ const Dashboard = () => {
               <List className="text-indigo-500 mb-4" size={32} />
               <h3 className="text-xl font-bold text-slate-900 mb-2">Browse Services</h3>
               <p className="text-slate-500 mb-6">Find the perfect expert for your home needs.</p>
-              <button className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
+              <Link to="/services" className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all mt-auto w-fit">
                 Explore Now <ArrowRight size={18} />
-              </button>
+              </Link>
             </motion.div>
 
             <motion.div variants={item} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-all">
@@ -98,9 +100,9 @@ const Dashboard = () => {
               <Shield className="text-rose-500 mb-4" size={32} />
               <h3 className="text-xl font-bold text-slate-900 mb-2">Admin Panel</h3>
               <p className="text-slate-500 mb-6">Manage users, moderate services, and approve categories.</p>
-              <button className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
+              <Link to="/admin" className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all mt-auto w-fit">
                 Enter Admin <Shield size={18} />
-              </button>
+              </Link>
             </motion.div>
           </>
         )}

@@ -14,13 +14,10 @@ app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 
-// Routes Placeholder
-app.get('/', (req, res) => {
-  res.send('ServeEase API is running...');
-});
-
-// Auth Routes
+// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/categories', require('./routes/categoryRoutes'));
+app.use('/api/services', require('./routes/serviceRoutes'));
 
 // Database Connection
 const PORT = process.env.PORT || 5000;
@@ -45,6 +42,18 @@ mongoose
         role: 'admin' // Create directly as admin
       });
       console.log(`Default admin created with email: ${ADMIN_EMAIL}`);
+    }
+
+    // Auto-create default approved categories
+    const Category = require('./models/Category');
+    const defaultCategories = ['Plumbing', 'Electrician', 'Cleaning', 'Carpentry', 'Painting', 'Appliance Repair'];
+    
+    for (const catName of defaultCategories) {
+      const exists = await Category.findOne({ name: catName });
+      if (!exists) {
+        await Category.create({ name: catName, isApproved: true });
+        console.log(`Default category created: ${catName}`);
+      }
     }
 
     app.listen(PORT, () => {

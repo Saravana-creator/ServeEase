@@ -1,4 +1,5 @@
 const Service = require('../models/Service');
+const Feedback = require('../models/Feedback');
 
 const createService = async (req, res) => {
   const { title, description, category, price, location } = req.body;
@@ -46,10 +47,26 @@ const getServices = async (req, res) => {
     if (maxPrice) filter.price.$lte = Number(maxPrice);
   }
 
-  const services = await Service.find(filter)
+  let services = await Service.find(filter)
     .populate('provider', 'name email')
     .populate('category', 'name')
     .sort({ createdAt: -1 });
+
+  // Add rating stats to each service
+  services = await Promise.all(services.map(async (s) => {
+    const ratings = await Feedback.aggregate([
+      { $match: { service: s._id } },
+      { $group: { _id: null, avgRating: { $avg: '$rating' }, count: { $sum: 1 } } }
+    ]);
+    return {
+      ...s._doc,
+      avgRating: (ratings.length > 0 && ratings[0].avgRating !== null) 
+        ? ratings[0].avgRating.toFixed(1) 
+        : 'No reviews yet',
+      reviewCount: ratings.length > 0 ? ratings[0].count : 0
+    };
+  }));
+
   res.json({ success: true, count: services.length, data: services });
 };
 
@@ -57,8 +74,23 @@ const getServiceById = async (req, res) => {
   const service = await Service.findById(req.params.id)
     .populate('provider', 'name email')
     .populate('category', 'name');
+    
   if (!service) return res.status(404).json({ message: 'Service not found' });
-  res.json({ success: true, data: service });
+
+  const ratings = await Feedback.aggregate([
+    { $match: { service: service._id } },
+    { $group: { _id: null, avgRating: { $avg: '$rating' }, count: { $sum: 1 } } }
+  ]);
+
+  const data = {
+    ...service._doc,
+    avgRating: (ratings.length > 0 && ratings[0].avgRating !== null) 
+      ? ratings[0].avgRating.toFixed(1) 
+      : 'No reviews yet',
+    reviewCount: ratings.length > 0 ? ratings[0].count : 0
+  };
+
+  res.json({ success: true, data });
 };
 
 const updateService = async (req, res) => {

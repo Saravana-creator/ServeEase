@@ -6,6 +6,13 @@ const feedbackSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add some text'],
     },
+    rating: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 5,
+      default: 5
+    },
     service: {
       type: mongoose.Schema.ObjectId,
       ref: 'Service',

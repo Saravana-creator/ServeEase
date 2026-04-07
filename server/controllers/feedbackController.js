@@ -7,11 +7,11 @@ const Service = require('../models/Service');
 // @access  Private (Customer only)
 exports.createFeedback = async (req, res) => {
   try {
-    const { text } = req.body;
+    const { text, rating } = req.body;
     const serviceId = req.params.serviceId;
 
-    if (!text) {
-      return res.status(400).json({ success: false, message: 'Please provide feedback text' });
+    if (!text || !rating) {
+      return res.status(400).json({ success: false, message: 'Please provide both feedback text and rating' });
     }
 
     if (!mongoose.Types.ObjectId.isValid(serviceId)) {
@@ -25,9 +25,10 @@ exports.createFeedback = async (req, res) => {
 
     const feedback = await Feedback.create({
       text,
+      rating: Number(rating),
       service: serviceId,
       provider: service.provider,
-      customer: req.user._id // Using _id correctly
+      customer: req.user._id 
     });
 
     res.status(201).json({

@@ -99,6 +99,16 @@ const ServiceDetail = () => {
             <div className="flex-1 space-y-4">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="px-3 py-1 bg-indigo-100 text-indigo-700 text-xs font-bold rounded-full uppercase tracking-wider">{service.category?.name || 'Uncategorized'}</span>
+                {service.avgRating && (
+                  <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border shadow-sm ${
+                    service.avgRating === 'No reviews yet' ? 'bg-slate-50 text-slate-400 border-slate-100' : 'bg-amber-50 text-amber-700 border-amber-100'
+                  }`}>
+                    {service.avgRating === 'No reviews yet' 
+                      ? <span className="italic">No reviews yet</span>
+                      : <>⭐ {service.avgRating} <span className="text-[10px] text-amber-500 font-medium">({service.reviewCount} Reviews)</span></>
+                    }
+                  </div>
+                )}
                 <span className="text-gray-400 text-sm flex items-center gap-1">📍 {service.location}</span>
               </div>
               <h1 className="text-4xl font-extrabold text-gray-900">{service.title}</h1>

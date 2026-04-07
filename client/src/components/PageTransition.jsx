@@ -1,14 +1,7 @@
-import { motion } from 'framer-motion';
-
-const PageTransition = ({ children }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 16 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -16 }}
-    transition={{ duration: 0.3, ease: 'easeOut' }}
-  >
-    {children}
-  </motion.div>
-);
+// Page Transition is now handled globally in Layout.jsx
+// This component acts as a passthrough to avoid breaking existing imports.
+const PageTransition = ({ children }) => {
+  return children;
+};
 
 export default PageTransition;

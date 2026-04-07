@@ -77,7 +77,7 @@ const ServiceDetails = () => {
             </div>
             <div className="text-right flex flex-col items-start md:items-end p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
                 <span className="text-emerald-800 text-sm font-bold uppercase tracking-wider mb-1 flex items-center gap-1"><DollarSign size={16}/> Rate</span>
-                <span className="text-4xl font-black text-emerald-600">${service.price}</span>
+                <span className="text-4xl font-black text-emerald-600">₹{service.price}</span>
             </div>
          </div>
          

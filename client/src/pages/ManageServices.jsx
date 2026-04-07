@@ -2,14 +2,17 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { getServices, deleteService } from '../services/api';
 import { useAuth } from '../context/AuthContext';
-import { Loader2, PlusCircle, Edit, Trash2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { Link, Navigate } from 'react-router-dom';
+import { PlusCircle, Loader2, X, Edit, Trash2 } from 'lucide-react';
+import ConfirmDialog from '../components/ConfirmDialog';
 
 const ManageServices = () => {
   const { user } = useAuth();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteId, setDeleteId] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   if (!user || user.role !== 'provider') {
     return <Navigate to="/dashboard" />;
@@ -31,14 +34,18 @@ const ManageServices = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this service permanently?')) return;
+  const handleDelete = async () => {
+    if (!deleteId) return;
+    setIsDeleting(true);
     try {
-      await deleteService(id);
+      await deleteService(deleteId);
       toast.success('Service deleted successfully');
-      setServices(services.filter(s => s._id !== id));
+      setServices(services.filter(s => s._id !== deleteId));
     } catch (err) {
       toast.error('Failed to delete service');
+    } finally {
+      setIsDeleting(false);
+      setDeleteId(null);
     }
   };
 
@@ -96,7 +103,7 @@ const ManageServices = () => {
                         {service.category?.name || 'Unknown'}
                       </span>
                     </td>
-                    <td className="p-4 font-extrabold text-emerald-600">${service.price}</td>
+                    <td className="p-4 font-extrabold text-emerald-600">₹{service.price}</td>
                     <td className="p-4 text-sm text-slate-600">{service.location}</td>
                     <td className="p-4 text-right flex justify-end gap-2">
                       <Link 
@@ -107,7 +114,7 @@ const ManageServices = () => {
                         <Edit size={18} />
                       </Link>
                       <button 
-                        onClick={() => handleDelete(service._id)}
+                        onClick={() => setDeleteId(service._id)}
                         className="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
                         title="Delete"
                       >
@@ -121,6 +128,15 @@ const ManageServices = () => {
           </div>
         </div>
       )}
+
+      <ConfirmDialog 
+        isOpen={!!deleteId}
+        title="Delete Service?"
+        message="Are you sure you want to permanently remove this service? This action cannot be undone."
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteId(null)}
+        confirmText={isDeleting ? "Deleting..." : "Delete Permanently"}
+      />
     </div>
   );
 };

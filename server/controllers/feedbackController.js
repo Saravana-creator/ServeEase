@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Feedback = require('../models/Feedback');
 const Service = require('../models/Service');
 
@@ -13,6 +14,10 @@ exports.createFeedback = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Please provide feedback text' });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(serviceId)) {
+      return res.status(400).json({ success: false, message: 'Invalid service ID' });
+    }
+
     const service = await Service.findById(serviceId);
     if (!service) {
       return res.status(404).json({ success: false, message: 'Service not found' });
@@ -22,7 +27,7 @@ exports.createFeedback = async (req, res) => {
       text,
       service: serviceId,
       provider: service.provider,
-      customer: req.user.id
+      customer: req.user._id // Using _id correctly
     });
 
     res.status(201).json({
@@ -39,7 +44,7 @@ exports.createFeedback = async (req, res) => {
 // @access  Private (Provider only)
 exports.getProviderFeedbacks = async (req, res) => {
   try {
-    const feedbacks = await Feedback.find({ provider: req.user.id })
+    const feedbacks = await Feedback.find({ provider: req.user._id }) // Use _id
       .populate({ path: 'customer', select: 'name email' })
       .populate({ path: 'service', select: 'title' })
       .sort({ createdAt: -1 });
@@ -59,6 +64,10 @@ exports.getProviderFeedbacks = async (req, res) => {
 // @access  Public
 exports.getServiceFeedbacks = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.serviceId)) {
+      return res.status(200).json({ success: true, count: 0, data: [] }); // Return empty for invalid IDs instead of 500
+    }
+
     const feedbacks = await Feedback.find({ service: req.params.serviceId })
       .populate({ path: 'customer', select: 'name' })
       .sort({ createdAt: -1 });

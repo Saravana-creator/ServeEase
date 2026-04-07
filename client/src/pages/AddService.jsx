@@ -130,7 +130,7 @@ const AddService = () => {
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                    {/* Price */}
                    <div className="space-y-2">
-                     <label className="text-sm font-bold text-slate-700">Price ($)</label>
+                     <label className="text-sm font-bold text-slate-700">Price (₹)</label>
                      <div className="relative">
                         <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input 

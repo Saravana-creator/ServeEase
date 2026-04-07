@@ -139,7 +139,7 @@ const ServiceList = () => {
             </div>
 
             <div className="space-y-1">
-              <label className="text-sm font-semibold text-slate-700">Max Price ($)</label>
+              <label className="text-sm font-semibold text-slate-700">Max Price (₹)</label>
               <input 
                 type="number" 
                 value={filters.maxPrice}

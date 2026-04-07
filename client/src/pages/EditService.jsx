@@ -105,7 +105,7 @@ const EditService = () => {
 
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                    <div className="space-y-2">
-                     <label className="text-sm font-bold text-slate-700">Price ($)</label>
+                     <label className="text-sm font-bold text-slate-700">Price (₹)</label>
                      <div className="relative">
                         <DollarSign className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                         <input type="number" required min="1" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="w-full pl-12 pr-4 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary-500 transition-all font-medium" />

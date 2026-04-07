@@ -29,7 +29,7 @@ const ServiceCard = ({ service, index }) => {
                     <span className="truncate max-w-[120px]">{service.provider?.name || 'Unknown'}</span>
                 </div>
                 <div className="text-lg font-extrabold text-primary-600">
-                    ${service.price}
+                    ₹{service.price}
                 </div>
             </div>
         </div>

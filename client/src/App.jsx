@@ -1,19 +1,27 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import Layout from './layouts/Layout';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
+
+// My styled pages
+import Home from './pages/HomePage';
+import Login from './pages/LoginPage';
+import Signup from './pages/SignupPage';
 import Dashboard from './pages/Dashboard';
-import ServiceList from './pages/ServiceList';
-import ServiceDetails from './pages/ServiceDetails';
+import ServiceList from './pages/ServicesPage';
+import ServiceDetails from './pages/ServiceDetail';
 import AddService from './pages/AddService';
 import EditService from './pages/EditService';
 import ManageServices from './pages/ManageServices';
 import ProviderMessages from './pages/ProviderMessages';
 import AdminDashboard from './pages/AdminDashboard';
-import { useAuth } from './context/AuthContext';
+import BillingPage from './pages/BillingPage';
+import ProfilePage from './pages/ProfilePage';
+import FeedbackPage from './pages/FeedbackPage';
 
-function App() {
+// ProtectedRoute concept from incoming
+import ProtectedRoute from './components/ProtectedRoute';
+
+function AppRoutes() {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -35,12 +43,24 @@ function App() {
         <Route path="services/:id" element={<ServiceDetails />} />
         <Route path="services/add" element={user?.role === 'provider' ? <AddService /> : <Navigate to="/dashboard" />} />
         <Route path="services/edit/:id" element={user?.role === 'provider' ? <EditService /> : <Navigate to="/dashboard" />} />
+        <Route path="billing/:id" element={user ? <BillingPage /> : <Navigate to="/login" />} />
         <Route path="manage-services" element={user?.role === 'provider' ? <ManageServices /> : <Navigate to="/dashboard" />} />
         <Route path="messages" element={user?.role === 'provider' ? <ProviderMessages /> : <Navigate to="/dashboard" />} />
+        <Route path="profile" element={user ? <ProfilePage /> : <Navigate to="/login" />} />
+        <Route path="feedback/:id" element={<FeedbackPage />} />
         <Route path="admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/dashboard" />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>
   );
 }
+
+const App = () => (
+  <AuthProvider>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  </AuthProvider>
+);
 
 export default App;

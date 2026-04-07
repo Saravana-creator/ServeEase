@@ -36,19 +36,19 @@ function AppRoutes() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="login" element={!user ? <Login /> : <Navigate to="/dashboard" />} />
-        <Route path="signup" element={!user ? <Signup /> : <Navigate to="/dashboard" />} />
-        <Route path="dashboard" element={user ? <Dashboard /> : <Navigate to="/login" />} />
+        <Route path="login" element={!user ? <Login /> : <Navigate to="/dashboard" replace />} />
+        <Route path="signup" element={!user ? <Signup /> : <Navigate to="/dashboard" replace />} />
+        <Route path="dashboard" element={user ? <Dashboard /> : <Navigate to="/login" replace />} />
         <Route path="services" element={<ServiceList />} />
         <Route path="services/:id" element={<ServiceDetails />} />
-        <Route path="services/add" element={user?.role === 'provider' ? <AddService /> : <Navigate to="/dashboard" />} />
-        <Route path="services/edit/:id" element={user?.role === 'provider' ? <EditService /> : <Navigate to="/dashboard" />} />
-        <Route path="billing/:id" element={user ? <BillingPage /> : <Navigate to="/login" />} />
-        <Route path="manage-services" element={user?.role === 'provider' ? <ManageServices /> : <Navigate to="/dashboard" />} />
-        <Route path="messages" element={user?.role === 'provider' ? <ProviderMessages /> : <Navigate to="/dashboard" />} />
-        <Route path="profile" element={user ? <ProfilePage /> : <Navigate to="/login" />} />
+        <Route path="services/add" element={user?.role === 'provider' ? <AddService /> : <Navigate to="/dashboard" replace />} />
+        <Route path="services/edit/:id" element={user?.role === 'provider' ? <EditService /> : <Navigate to="/dashboard" replace />} />
+        <Route path="billing/:id" element={user ? <BillingPage /> : <Navigate to="/login" replace />} />
+        <Route path="manage-services" element={user?.role === 'provider' ? <ManageServices /> : <Navigate to="/dashboard" replace />} />
+        <Route path="messages" element={user?.role === 'provider' ? <ProviderMessages /> : <Navigate to="/dashboard" replace />} />
+        <Route path="profile" element={user ? <ProfilePage /> : <Navigate to="/login" replace />} />
         <Route path="feedback/:id" element={<FeedbackPage />} />
-        <Route path="admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/dashboard" />} />
+        <Route path="admin" element={user?.role === 'admin' ? <AdminDashboard /> : <Navigate to="/dashboard" replace />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

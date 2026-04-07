@@ -18,19 +18,34 @@ const createService = async (req, res) => {
 };
 
 const getServices = async (req, res) => {
-  const { category, location, minPrice, maxPrice } = req.query;
+  const { category, location, minPrice, maxPrice, search } = req.query;
   const filter = {};
+
   if (category) {
-    const Category = require('../models/Category');
-    const cat = await Category.findOne({ name: { $regex: category, $options: 'i' } });
-    if (cat) filter.category = cat._id;
+    if (category.match(/^[0-9a-fA-F]{24}$/)) {
+      filter.category = category;
+    } else {
+      const Category = require('../models/Category');
+      const cat = await Category.findOne({ name: { $regex: category, $options: 'i' } });
+      if (cat) filter.category = cat._id;
+    }
   }
+
   if (location) filter.location = { $regex: location, $options: 'i' };
+  
+  if (search) {
+    filter.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { description: { $regex: search, $options: 'i' } }
+    ];
+  }
+
   if (minPrice || maxPrice) {
     filter.price = {};
     if (minPrice) filter.price.$gte = Number(minPrice);
     if (maxPrice) filter.price.$lte = Number(maxPrice);
   }
+
   const services = await Service.find(filter)
     .populate('provider', 'name email')
     .populate('category', 'name')

@@ -98,6 +98,9 @@ const BillingPage = () => {
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [cardDetails, setCardDetails] = useState({ number: '', expiry: '', cvv: '' });
+  const [upiId, setUpiId] = useState('');
 
   useEffect(() => {
     api.get(`/services/${id}`)
@@ -129,10 +132,23 @@ const BillingPage = () => {
 
   const handlePay = async () => {
     setPaying(true);
-    // Simulate payment processing delay
-    await new Promise(r => setTimeout(r, 1800));
-    setPaying(false);
-    setSuccess(true);
+    try {
+      // Simulate payment processing delay
+      await new Promise(r => setTimeout(r, 1800));
+      
+      // Save booking in database
+      await api.post('/bookings', {
+        serviceId: id,
+        amount: total,
+        paymentMethod: paymentMethod === 'cod' ? 'COD' : paymentMethod.toUpperCase()
+      });
+
+      setPaying(false);
+      setSuccess(true);
+    } catch {
+      toast.error('Payment failed to record');
+      setPaying(false);
+    }
   };
 
   const lineItems = [
@@ -219,28 +235,74 @@ const BillingPage = () => {
             </div>
           </motion.div>
 
-          {/* Payment Method (decorative) */}
+          {/* Payment Method */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }}
             className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4">Payment Method</p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              {[
-                { icon: '💳', label: 'Credit / Debit Card', active: true },
-                { icon: '📱', label: 'UPI', active: false },
-                { icon: '🏦', label: 'Net Banking', active: false },
-              ].map(({ icon, label, active }) => (
-                <div key={label}
-                  className={`flex-1 flex items-center gap-3 px-4 py-3 rounded-xl border-2 cursor-pointer transition-all ${
-                    active ? 'border-indigo-500 bg-indigo-50' : 'border-gray-100 hover:border-gray-200'
-                  }`}
-                >
-                  <span className="text-xl">{icon}</span>
-                  <span className={`text-sm font-medium ${active ? 'text-indigo-700' : 'text-gray-600'}`}>{label}</span>
-                  {active && <span className="ml-auto w-4 h-4 bg-indigo-600 rounded-full flex items-center justify-center">
-                    <span className="w-1.5 h-1.5 bg-white rounded-full" />
-                  </span>}
-                </div>
-              ))}
+            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-4 block">Payment Method</label>
+            
+            <div className="space-y-4">
+              <select 
+                value={paymentMethod}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-indigo-500 transition-all font-medium text-gray-700 appearance-none cursor-pointer"
+              >
+                <option value="card">💳 Credit / Debit Card</option>
+                <option value="upi">📱 UPI (GPay / PhonePe)</option>
+                <option value="netbanking">🏦 Net Banking</option>
+                <option value="cod">💵 Cash on Delivery (COD)</option>
+              </select>
+
+              <AnimatePresence mode="wait">
+                {paymentMethod === 'card' && (
+                  <motion.div key="card" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="space-y-3 pt-2">
+                    <input 
+                      type="text" placeholder="Card Number (XXXX XXXX XXXX XXXX)"
+                      value={cardDetails.number} onChange={e => setCardDetails({...cardDetails, number: e.target.value})}
+                      className="w-full px-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm outline-none focus:border-indigo-300"
+                    />
+                    <div className="flex gap-3">
+                      <input 
+                        type="text" placeholder="MM/YY"
+                        className="flex-1 px-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm outline-none focus:border-indigo-300"
+                      />
+                      <input 
+                        type="password" placeholder="CVV"
+                        className="w-24 px-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm outline-none focus:border-indigo-300"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+
+                {paymentMethod === 'upi' && (
+                  <motion.div key="upi" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="pt-2">
+                    <input 
+                      type="text" placeholder="Enter UPI ID (e.g. user@okaxis)"
+                      value={upiId} onChange={e => setUpiId(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-white border border-gray-100 rounded-xl text-sm outline-none focus:border-indigo-300"
+                    />
+                  </motion.div>
+                )}
+
+                {paymentMethod === 'netbanking' && (
+                  <motion.div key="net" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="pt-2">
+                    <p className="text-xs text-gray-400 p-4 border border-dashed border-gray-100 rounded-xl text-center italic">
+                      Coming soon! Currently selecting this will redirect to your bank's secure portal.
+                    </p>
+                  </motion.div>
+                )}
+
+                {paymentMethod === 'cod' && (
+                  <motion.div key="cod" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="pt-2">
+                    <div className="bg-amber-50 border border-amber-100 p-4 rounded-xl flex gap-3 items-center">
+                      <span className="text-xl">🚚</span>
+                      <div>
+                        <p className="text-sm font-bold text-amber-900">COD Available</p>
+                        <p className="text-xs text-amber-700">Pay directly to our provider after the service is completed.</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </motion.div>
 
@@ -264,7 +326,7 @@ const BillingPage = () => {
               ) : (
                 <>
                   <span>🔒</span>
-                  Proceed to Pay ₹{total.toFixed(2)}
+                  {paymentMethod === 'cod' ? 'Confirm Booking via COD' : `Proceed to Pay ₹${total.toFixed(2)}`}
                 </>
               )}
             </motion.button>

@@ -81,3 +81,22 @@ exports.getServiceFeedbacks = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+// @desc    Get feedbacks given by logged in customer
+// @route   GET /api/feedbacks/my-reviews
+// @access  Private (Customer only)
+exports.getMyFeedbacks = async (req, res) => {
+  try {
+    const feedbacks = await Feedback.find({ customer: req.user._id })
+      .populate({ path: 'service', select: 'title' })
+      .populate({ path: 'provider', select: 'name' })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: feedbacks.length,
+      data: feedbacks
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, message: err.message });
+  }
+};

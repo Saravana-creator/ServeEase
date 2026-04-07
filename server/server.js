@@ -48,7 +48,7 @@ const authLimiter = rateLimit({
 
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 150,
+  max: 1000, // Increased to accommodate dashboard polling and multiple concurrent requests
   message: { message: 'Too many requests from this IP, please try again later' },
   standardHeaders: true,
   legacyHeaders: false,
@@ -61,6 +61,7 @@ app.use('/api/messages', apiLimiter, require('./routes/messageRoutes'));
 app.use('/api/feedbacks', apiLimiter, require('./routes/feedbackRoutes'));
 app.use('/api/users', apiLimiter, require('./routes/userRoutes'));
 app.use('/api/categories', apiLimiter, require('./routes/categoryRoutes'));
+app.use('/api/bookings', apiLimiter, require('./routes/bookingRoutes'));
 
 // ── 404 ───────────────────────────────────────────────────────────────────────
 app.use((req, res) => res.status(404).json({ message: 'Route not found' }));

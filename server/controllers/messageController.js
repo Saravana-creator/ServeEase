@@ -13,6 +13,20 @@ const sendMessage = async (req, res) => {
   if (String(service.provider) === String(req.user._id))
     return res.status(400).json({ message: 'Cannot message yourself' });
 
+  // Prevent duplicate inquiries for the same service
+  const existingMessage = await Message.findOne({
+    sender: req.user._id,
+    service: serviceId,
+    status: { $in: ['pending', 'accepted'] }
+  });
+
+  if (existingMessage) {
+    return res.status(400).json({ 
+      success: false, 
+      message: 'You already have an active inquiry for this service.' 
+    });
+  }
+
   const message = await Message.create({
     sender: req.user._id,
     receiver: service.provider,

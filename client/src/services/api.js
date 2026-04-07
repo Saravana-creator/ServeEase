@@ -42,6 +42,11 @@ export const createService = (data) => api.post('/services', data);
 export const updateService = (id, data) => api.put(`/services/${id}`, data);
 export const deleteService = (id) => api.delete(`/services/${id}`);
 
+// Booking Services
+export const getMyBookings = () => api.get('/bookings/my-bookings');
+export const createBooking = (data) => api.post('/bookings', data);
+export const completeBooking = (id) => api.patch(`/bookings/${id}/complete`);
+
 // Message Services
 export const getMessages = () => api.get('/messages');
 export const sendMessage = (data) => api.post('/messages', data);
@@ -50,6 +55,7 @@ export const updateMessageStatus = (id, data) => api.patch(`/messages/${id}/stat
 
 // Feedback Services
 export const createFeedback = (serviceId, data) => api.post(`/feedbacks/${serviceId}`, data);
-export const getProviderFeedbacks = () => api.get('/feedbacks/service/mine');
+export const getProviderFeedbacks = () => api.get('/feedbacks/provider');
+export const getMyReviews = () => api.get('/feedbacks/my-reviews');
 export const getServiceFeedbacks = (serviceId) => api.get(`/feedbacks/service/${serviceId}`);
 export default api;

@@ -10,17 +10,11 @@ const ServiceCard = ({ service, index }) => {
       transition={{ delay: index * 0.1 }}
       className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-xl transition-all group relative flex flex-col"
     >
-      <div className="h-48 bg-gradient-to-br from-primary-100 to-indigo-100 relative overflow-hidden flex items-center justify-center group-hover:from-primary-200 group-hover:to-indigo-200 transition-colors duration-500">
-        <span className="text-6xl font-black text-primary-300/50 uppercase select-none tracking-widest">
-          {service.category?.name?.substring(0, 3) || 'JOB'}
-        </span>
-        <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-bold text-slate-700 flex items-center gap-1 shadow-sm">
-           <Tag size={14} className="text-primary-600"/>
+      <div className="p-6 flex-grow flex flex-col relative">
+        <div className="bg-primary-50 text-primary-700 px-3 py-1 rounded-full text-xs font-bold w-fit mb-3 flex items-center gap-1 border border-primary-100">
+           <Tag size={12} />
            {service.category?.name || 'Uncategorized'}
         </div>
-      </div>
-      
-      <div className="p-6 flex-grow flex flex-col">
         <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-1">{service.title}</h3>
         <p className="text-slate-500 text-sm mb-4 line-clamp-2">{service.description}</p>
         

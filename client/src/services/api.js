@@ -29,4 +29,9 @@ export const createService = (data) => api.post('/services', data);
 export const updateService = (id, data) => api.put(`/services/${id}`, data);
 export const deleteService = (id) => api.delete(`/services/${id}`);
 
+// Feedback Services
+export const createFeedback = (serviceId, data) => api.post(`/feedbacks/${serviceId}`, data);
+export const getProviderFeedbacks = () => api.get('/feedbacks/provider');
+export const getServiceFeedbacks = (serviceId) => api.get(`/feedbacks/service/${serviceId}`);
+
 export default api;

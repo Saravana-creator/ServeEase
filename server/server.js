@@ -18,6 +18,7 @@ app.use(morgan('dev'));
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/categories', require('./routes/categoryRoutes'));
 app.use('/api/services', require('./routes/serviceRoutes'));
+app.use('/api/feedbacks', require('./routes/feedbackRoutes'));
 
 // Database Connection
 const PORT = process.env.PORT || 5000;

@@ -55,9 +55,9 @@ const Dashboard = () => {
               <List className="text-blue-500 mb-4" size={32} />
               <h3 className="text-xl font-bold text-slate-900 mb-2">Manage Services</h3>
               <p className="text-slate-500 mb-6">View and edit your existing service listings.</p>
-              <button className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
+              <Link to="/manage-services" className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all mt-auto w-fit">
                 View All <List size={18} />
-              </button>
+              </Link>
             </motion.div>
 
             <motion.div variants={item} className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 hover:shadow-md transition-all relative overflow-hidden">
@@ -65,9 +65,9 @@ const Dashboard = () => {
               <MessageSquare className="text-purple-500 mb-4" size={32} />
               <h3 className="text-xl font-bold text-slate-900 mb-2">Customer Messages</h3>
               <p className="text-slate-500 mb-6">Respond to inquiries from potential customers.</p>
-              <button className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all">
+              <Link to="/messages" className="text-primary-600 font-bold flex items-center gap-2 hover:gap-3 transition-all mt-auto w-fit">
                 View Messages <MessageSquare size={18} />
-              </button>
+              </Link>
             </motion.div>
           </>
         )}
